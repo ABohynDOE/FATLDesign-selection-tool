@@ -1,0 +1,105 @@
+# Information tab ----
+information_tab <- tabPanel(
+  title = "Informations",
+  p(),
+  withMathJax(
+    p("The table below shows all the design cases with \\(N\\) runs, \\(m\\) four-level factors and \\(n\\) two-level factors covered in the catalog.")
+  ),
+
+  # Data table with the coverage of the catalog
+  reactableOutput("coverage"),
+
+  # Info on how to use the catalog
+  p(
+    "To explore the catalog, select the characterisitics of your design of interest in the",
+    tags$b("Design characteristics"),
+    "section of the side panel and click on the",
+    span(icon("table"), "Generate table", class = "in-text-button"),
+    "button. The table will then be displayed in the 'Catalog' tab of this panel."
+  ),
+  p(
+    "You can choose which information is shown in the table.",
+    "There are four options:"
+  ),
+  withMathJax(
+    tags$ul(
+      tags$li(
+        tags$b("Columns:"),
+        "The column numbers of the effects in a full factorial design with
+                  \\(N\\) runs that define the added factors in the four-and-two-level
+                  design. See the tab ‘Effect ordering’ for further explanation."
+      ),
+      tags$li(
+        tags$b("GWLP:"),
+        "The generalized word length pattern \\((A_{3},A_4,\\ldots,A_{m+n})\\)
+                of the design"
+      ),
+      tags$li(
+        tags$b("Word counts:"),
+        "Counts \\(A_l\\) of words with lengths \\(3 \\leq L \\leq 5\\), allowing
+                the user to sort the designs based on these counts. "
+      ),
+      tags$li(
+        tags$b("Type-specific word counts:"),
+        "Type-specific counts \\(A_{l.t}\\) of words with lengths \\(3 \\leq l \\leq 5\\)
+                and type \\(0 \\leq t \\leq m\\) allowing the user to sort the
+                designs based on these counts. "
+      )
+    )
+  )
+)
+
+# Catalog tab ----
+catalog_tab <- tabPanel(
+  title = "Catalog",
+  h3("Selected designs"),
+  p(
+    "The interactive table below shows the designs that you have selected.",
+    "You can use any of the column header to sort the designs accordingly, and the boxes below the header to filter the designs based on certain values for the columns.",
+    "To sort using a second column, press `Shift` while clicking on the column header."
+  ),
+  p("You can use the 'Download table' button below to download the
+            selected designs in table as an excel file."),
+  downloadButton("downloadTable", "Download table"),
+  p(),
+  reactableOutput("table"),
+  htmlOutput("designs_selected"),
+  downloadButton("downloadDesigns", "Download selected designs")
+)
+
+# Effect coding tab ----
+effect_coding_tab <- tabPanel(
+  title = "Effect ordering",
+  h3("Representing factors as column numbers"),
+  withMathJax(
+    p(
+      "When a two-level design has \\(N\\) runs, it has \\(k = log_2(N)\\) basic factors, that is, two-level factors that are independent of each other. When more than \\(k\\) factors are needed in the design, the additional factors are generated as linear combinations of the basic factors.
+If we represent the basic factors with individual lowercase letters starting with \\(\\bf{a}\\), then a linear combination of basic factors can be written as a word, called a",
+      tags$span("generator", style = "font-weight: bold"),
+      ". For example, a factor created from the linear combination of the first three basic factors would be \\(\\bf{abc}\\) as generator."
+    )
+  ),
+  p("However, for large combinations of basic factors, this can be cumbersome to write and read.
+Therefore, we prefer to store these generators as numbers instead of words. Since every number can be uniquely decomposed into powers of 2, each number correspond to a specific generator. Each basic factor is assigned to a specific power of 2 and the sum of the basic factors in the generator creates the number defining the generator, as detailled in the Figure below."),
+  img(
+    src = "column_numbering.png", align = "center", width = 500
+  ),
+  withMathJax(
+    p(
+      "With this logic, even basic factors can be represented by numbers, that are whole power of 2, \\(\\bf{a}\\) then becomes 1,  \\(\\bf{b}\\) becomes 2,  \\(\\bf{c}\\) becomes 4, etc... "
+    )
+  ),
+  h3("Constructing a design from its column numbers"),
+  p(
+    "When constructing a design with four-level factors and two-level factors, the four-level factors  are always constructed from pairs of unused basic factors. The remaining basic factors are then joined with the added factors and this new set forms all the two-level factors in the design. The figure belows details this process for a 64-run design with 5 added factors."
+  ),
+  img(
+    src = "design_generation.png", align = "center", alt = "Design generation diagram",
+    width = 500
+  ),
+  withMathJax(
+    p(
+      "Since the pairs used to construct the four-level parts are always the same, only the added factors actually vary between different designs. That is, all 64-run designs with two four-level factors will use \\((1,2)\\) to generate \\(\\bf{A}\\), and  \\((4,8)\\) to generate\\(\\bf{B}\\). For this reason, only these column numbers are given in the catalog. But, as the Figure shows, it is simple to reconstruct the design only from the added factors."
+    )
+  )
+)
