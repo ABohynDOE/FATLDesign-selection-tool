@@ -1,3 +1,4 @@
+library(reactable)
 # Information tab ----
 information_tab <- tabPanel(
   title = "Informations",
@@ -14,7 +15,7 @@ information_tab <- tabPanel(
     "To explore the catalog, select the characterisitics of your design of interest in the",
     tags$b("Design characteristics"),
     "section of the side panel and click on the",
-    span(icon("table"), "Generate table", class = "in-text-button"),
+    span("Generate table", class = "in-text-button"),
     "button. The table will then be displayed in the 'Catalog' tab of this panel."
   ),
   p(
@@ -27,7 +28,7 @@ information_tab <- tabPanel(
         tags$b("Columns:"),
         "The column numbers of the effects in a full factorial design with
                   \\(N\\) runs that define the added factors in the four-and-two-level
-                  design. See the tab ‘Effect ordering’ for further explanation."
+                  design. See the tab 'Effect ordering' for further explanation."
       ),
       tags$li(
         tags$b("GWLP:"),
@@ -102,4 +103,25 @@ Therefore, we prefer to store these generators as numbers instead of words. Sinc
       "Since the pairs used to construct the four-level parts are always the same, only the added factors actually vary between different designs. That is, all 64-run designs with two four-level factors will use \\((1,2)\\) to generate \\(\\bf{A}\\), and  \\((4,8)\\) to generate\\(\\bf{B}\\). For this reason, only these column numbers are given in the catalog. But, as the Figure shows, it is simple to reconstruct the design only from the added factors."
     )
   )
+)
+
+# Contact ----
+contact_tab <- tabPanel(
+  title = "Contact",
+  h3('Contact us'),
+  p(
+    "If you have a question or need more specific information, please contact us
+    by mail at",
+    a(
+      "alexandre.bohyn@kuleuven.be", 
+      href = "mailto:alexandre.bohyn@kuleuven.be")
+    ),
+  h3("Bug report"),
+  p("If there is a bug with the application or you would like to contribute, 
+    contact us or create an issue on Github using the button below."),
+  actionButton(
+    inputId='bugReport', 
+    label="Bug report", 
+    icon = icon("bug"), 
+    onclick ="window.open('https://github.com/ABohynDOE/FATLDesign-selection-tool/issues/new')")
 )

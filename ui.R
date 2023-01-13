@@ -26,7 +26,8 @@ ui <- fluidPage(
         type = "tabs",
         information_tab,
         catalog_tab,
-        effect_coding_tab
+        effect_coding_tab,
+        contact_tab
       )
     )
   )
