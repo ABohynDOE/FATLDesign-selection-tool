@@ -7,8 +7,7 @@ source("R/global.R") # Retrieve coverage data
 source("R/mixed_level_design.R") # Function to generate a mixed-level design
 
 server <- function(input, output, session) {
-  # Immutable tables ----
-  ## Catalog coverage data table ----
+  # Catalog coverage data table ----
   output$coverage <- renderReactable(
     coverage %>%
       mutate(resolution = as.character(resolution)) %>%
@@ -107,10 +106,16 @@ server <- function(input, output, session) {
         onClick = "select",
         highlight = TRUE,
         theme = reactableTheme(
-          rowSelectedStyle = list(backgroundColor = "#eee", boxShadow = "inset 2px 0 0 0 #ffa62d")
+          rowSelectedStyle = list(
+            backgroundColor = "#eee",
+            boxShadow = "inset 2px 0 0 0 #ffa62d"
+          )
         )
       )
   })
+
+  # Dynamically retrieve selected rows in the table
+  selected <- reactive(getReactableState("table", "selected"))
 
   # Design table download button ----
   output$downloadTable <- downloadHandler(
@@ -125,10 +130,9 @@ server <- function(input, output, session) {
       )
     },
     content = function(file) {
-      # We only want to export selected designs
-      selection <- reactive(getReactableState("table", "selected"))
       data <- dataInput() %>%
-        dplyr::slice(selection()) %>%
+        # We only want to export selected designs
+        dplyr::slice(selected()) %>%
         # Design ID should be part of the table too
         tibble::rownames_to_column("Rank") %>%
         # Design general information (N, m, n, R) should be displayed in the table too
@@ -156,11 +160,10 @@ server <- function(input, output, session) {
       )
     },
     content = function(file) {
-      # We only want to export selected designs
-      selection <- reactive(getReactableState("table", "selected"))
       # First line of the file should give information about the designs created
       info <- paste(
-        length(selection()),
+        # We only want to export selected designs
+        length(selected()),
         as.integer(input$runsize),
         as.integer(input$nbr_flvl_fac),
         as.integer(input$nbr_tlvl_fac),
@@ -170,7 +173,7 @@ server <- function(input, output, session) {
       write(info, file)
       # Only column numbers are needed
       cols <- dataInput() %>%
-        dplyr::slice(selection()) %>%
+        dplyr::slice(selected()) %>%
         pull(Columns)
       # Columns must be transformed into integer
       cols_vec <- lapply(str_split(cols, ","), as.integer)
@@ -185,10 +188,11 @@ server <- function(input, output, session) {
       matrices <- lapply(cols_vec, make_design)
       # Matrices must be text to later write it to the file as a single line
       matrices_text <- text <- lapply(matrices, create_text)
-      # writeLines(unlist(matrices_text), file)
       index <- 1
+      design_id_vec <- selected()
       for (matrix_text in matrices_text) {
-        write(as.character(index), file, append = TRUE)
+        design_id <- design_id_vec[index]
+        write(as.character(design_id), file, append = TRUE)
         write(matrix_text, file, append = TRUE)
         index <- index + 1
       }
@@ -197,14 +201,11 @@ server <- function(input, output, session) {
 
   # Display the selected designs
   output$designs_selected <- renderText({
-    selection <- reactive(getReactableState("table", "selected"))
-    nbr_design_string <- paste("You have selected", length(selection()), "designs")
-    HTML(
-      paste(
-        nbr_design_string,
-        "To download the designs, click on the 'Download designs' button below.",
-        sep = "<br/>"
-      )
-    )
+    paste(
+      "You have selected",
+      length(selected()),
+      "designs"
+    ) %>%
+      HTML()
   })
 }

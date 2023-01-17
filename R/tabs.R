@@ -1,7 +1,7 @@
 library(reactable)
 # Information tab ----
 information_tab <- tabPanel(
-  title = "Informations",
+  title = "Information",
   p(),
   withMathJax(
     p("The table below shows all the design cases with \\(N\\) runs, \\(m\\) four-level factors and \\(n\\) two-level factors covered in the catalog.")
@@ -59,13 +59,27 @@ catalog_tab <- tabPanel(
     "You can use any of the column header to sort the designs accordingly, and the boxes below the header to filter the designs based on certain values for the columns.",
     "To sort using a second column, press `Shift` while clicking on the column header."
   ),
-  p("You can use the 'Download table' button below to download the
-            selected designs in table as an excel file."),
-  downloadButton("downloadTable", "Download table"),
-  p(),
+  p(
+    "You can use the 'Download table' button below to download the selected designs in table as an excel file.",
+    "The designs in the Table will be ordered according to their ID."
+  ),
+  downloadButton(
+    outputId = "downloadTable", 
+    label = "Download table",
+    style = "color: #fff; background-color: #337ab7; border-color: #2e6da4"
+  ),
+  br(),
   reactableOutput("table"),
   htmlOutput("designs_selected"),
-  downloadButton("downloadDesigns", "Download selected designs")
+  p(
+    "To download the designs, click on the 'Download designs' button below.",
+    "In the file, the designs are ordered by ID and the ID of the design is mentionned before the design matrix"
+  ),
+  downloadButton(
+    outputId = "downloadDesigns", 
+    label = "Download selected designs",
+    style = "color: #fff; background-color: #337ab7; border-color: #2e6da4"
+  )
 )
 
 # Effect coding tab ----
@@ -122,6 +136,7 @@ contact_tab <- tabPanel(
   actionButton(
     inputId='bugReport', 
     label="Bug report", 
-    icon = icon("bug"), 
+    icon = icon("bug"),
+    style = "color: #fff; background-color: #337ab7; border-color: #2e6da4",
     onclick ="window.open('https://github.com/ABohynDOE/FATLDesign-selection-tool/issues/new')")
 )
