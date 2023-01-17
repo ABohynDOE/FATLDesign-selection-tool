@@ -133,8 +133,8 @@ server <- function(input, output, session) {
       data <- dataInput() %>%
         # We only want to export selected designs
         dplyr::slice(selected()) %>%
-        # Design ID should be part of the table too
-        tibble::rownames_to_column("Rank") %>%
+        # # Design ID should be part of the table too
+        # tibble::rownames_to_column("Rank") %>%
         # Design general information (N, m, n, R) should be displayed in the table too
         mutate(
           N = input$runsize,
