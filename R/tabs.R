@@ -64,7 +64,7 @@ catalog_tab <- tabPanel(
     "The designs in the Table will be ordered according to their ID."
   ),
   downloadButton(
-    outputId = "downloadTable", 
+    outputId = "downloadTable",
     label = "Download table",
     style = "color: #fff; background-color: #337ab7; border-color: #2e6da4"
   ),
@@ -76,7 +76,7 @@ catalog_tab <- tabPanel(
     "In the file, the designs are ordered by ID and the ID of the design is mentionned before the design matrix"
   ),
   downloadButton(
-    outputId = "downloadDesigns", 
+    outputId = "downloadDesigns",
     label = "Download selected designs",
     style = "color: #fff; background-color: #337ab7; border-color: #2e6da4"
   )
@@ -88,25 +88,34 @@ effect_coding_tab <- tabPanel(
   h3("Representing factors as column numbers"),
   withMathJax(
     p(
-      "When a two-level design has \\(N\\) runs, it has \\(k = log_2(N)\\) basic factors, that is, two-level factors that are independent of each other. When more than \\(k\\) factors are needed in the design, the additional factors are generated as linear combinations of the basic factors.
-If we represent the basic factors with individual lowercase letters starting with \\(\\bf{a}\\), then a linear combination of basic factors can be written as a word, called a",
+      "When a two-level design has \\(N\\) runs, it has \\(k = log_2(N)\\) basic factors, that is, two-level factors that are independent of each other.",
+      "When more than \\(k\\) factors are needed in the design, the additional factors are generated as linear combinations of the basic factors.",
+      "If we represent the basic factors with individual lowercase letters starting with \\(\\bf{a}\\), then a linear combination of basic factors can be written as a word, called a",
       tags$span("generator", style = "font-weight: bold"),
-      ". For example, a factor created from the linear combination of the first three basic factors would be \\(\\bf{abc}\\) as generator."
+      ". For example, a factor created from the linear combination of the first three basic factors would have \\(\\bf{abc}\\) as generator."
+    ),
+    p(
+      "However, for large combinations of basic factors, this can be cumbersome to write and read.",
+      "Therefore, we prefer to store these generators as numbers instead of words.",
+      "Since every number can be uniquely decomposed into powers of 2, each generator can be associated with a combination of powers of 2.",
+      "To do this, each basic factor is assigned to a specific power of 2 and the sum of these powers creates the number defining the generator.",
+      "The Figure below show that process for the generator \\(\\bf{abc}\\)."
     )
   ),
-  p("However, for large combinations of basic factors, this can be cumbersome to write and read.
-Therefore, we prefer to store these generators as numbers instead of words. Since every number can be uniquely decomposed into powers of 2, each number correspond to a specific generator. Each basic factor is assigned to a specific power of 2 and the sum of the basic factors in the generator creates the number defining the generator, as detailled in the Figure below."),
   img(
     src = "column_numbering.png", align = "center", width = 500
   ),
   withMathJax(
     p(
-      "With this logic, even basic factors can be represented by numbers, that are whole power of 2, \\(\\bf{a}\\) then becomes 1,  \\(\\bf{b}\\) becomes 2,  \\(\\bf{c}\\) becomes 4, etc... "
+      "With this logic, basic factors are represented by numbers that are whole power of 2.",
+      "For example, \\(\\bf{a}\\) is represented by number 1,  \\(\\bf{b}\\) by number 2,  \\(\\bf{c}\\) by number 4, etc... "
     )
   ),
   h3("Constructing a design from its column numbers"),
   p(
-    "When constructing a design with four-level factors and two-level factors, the four-level factors  are always constructed from pairs of unused basic factors. The remaining basic factors are then joined with the added factors and this new set forms all the two-level factors in the design. The figure belows details this process for a 64-run design with 5 added factors."
+    "When constructing a design with four-level factors and two-level factors, the four-level factors are always constructed from pairs of unused basic factors.",
+    "The remaining basic factors are then joined with the added factors and this new set forms all the two-level factors in the design.",
+    "The figure belows details this process for a 64-run design with 5 added factors."
   ),
   img(
     src = "design_generation.png", align = "center", alt = "Design generation diagram",
@@ -114,7 +123,10 @@ Therefore, we prefer to store these generators as numbers instead of words. Sinc
   ),
   withMathJax(
     p(
-      "Since the pairs used to construct the four-level parts are always the same, only the added factors actually vary between different designs. That is, all 64-run designs with two four-level factors will use \\((1,2)\\) to generate \\(\\bf{A}\\), and  \\((4,8)\\) to generate\\(\\bf{B}\\). For this reason, only these column numbers are given in the catalog. But, as the Figure shows, it is simple to reconstruct the design only from the added factors."
+      "Since the pairs used to construct the four-level parts are always the same, only the added factors actually vary between different designs.",
+      "That is, all 64-run designs with two four-level factors will use the pair \\((1,2)\\) to generate factor \\(\\bf{A}\\), and  the pair \\((4,8)\\) to generate factor \\(\\bf{B}\\).",
+      "For this reason, only the column numbers of the added factors are given in the catalog.",
+      "But, as the Figure shows, it is simple to reconstruct any design only from the added factors, given its runsize."
     )
   )
 )
@@ -122,21 +134,23 @@ Therefore, we prefer to store these generators as numbers instead of words. Sinc
 # Contact ----
 contact_tab <- tabPanel(
   title = "Contact",
-  h3('Contact us'),
+  h3("Contact us"),
   p(
     "If you have a question or need more specific information, please contact us
     by mail at",
     a(
-      "alexandre.bohyn@kuleuven.be", 
-      href = "mailto:alexandre.bohyn@kuleuven.be")
-    ),
+      "alexandre.bohyn@kuleuven.be",
+      href = "mailto:alexandre.bohyn@kuleuven.be"
+    )
+  ),
   h3("Bug report"),
-  p("If there is a bug with the application or you would like to contribute, 
+  p("If there is a bug with the application or you would like to contribute,
     contact us or create an issue on Github using the button below."),
   actionButton(
-    inputId='bugReport', 
-    label="Bug report", 
+    inputId = "bugReport",
+    label = "Bug report",
     icon = icon("bug"),
     style = "color: #fff; background-color: #337ab7; border-color: #2e6da4",
-    onclick ="window.open('https://github.com/ABohynDOE/FATLDesign-selection-tool/issues/new')")
+    onclick = "window.open('https://github.com/ABohynDOE/FATLDesign-selection-tool/issues/new')"
+  )
 )
