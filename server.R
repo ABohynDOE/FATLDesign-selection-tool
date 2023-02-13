@@ -140,8 +140,7 @@ server <- function(input, output, session) {
           N = input$runsize,
           n = input$nbr_tlvl_fac,
           m = input$nbr_flvl_fac,
-          resolution = input$resolution,
-          .before = "Rank"
+          resolution = input$resolution
         ) %>%
         writexl::write_xlsx(file)
     }
