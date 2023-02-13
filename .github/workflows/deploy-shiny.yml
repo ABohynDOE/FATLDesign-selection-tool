@@ -21,7 +21,7 @@ jobs:
           r-version: ${{ matrix.r-version }}
       - name: Install shiny
         run: |
-          install.packages(c("shiny", "rsconnect"), type = "binary")
+          install.packages(c("shiny", "rsconnect"))
         shell: Rscript {0}
       - name: Push to shiny.io
         run: |
