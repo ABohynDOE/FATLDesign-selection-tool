@@ -1,0 +1,26 @@
+name: Deploy app to shinyapps.io using rsconnect
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  deploy-shiny:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        r-version: ['4.1.1']
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: r-lib/actions/setup-r@master
+      - name: Install shiny
+        run: |
+          install.packages(c("shiny", "rsconnect"), type = "binary")
+        shell: Rscript {0}
+      - name: Push to shiny.io
+        run: |
+          Rscript -e "rsconnect::setAccountInfo(name='abohyndoe', token=${{secrets.SHINYAPPS_TOKEN}}, secret=${{secrets.SHINYAPPS_SECRET}})"
+          Rscript -e "rsconnect::deployApp(appName = 'fatldesign-selection-tool')" 
