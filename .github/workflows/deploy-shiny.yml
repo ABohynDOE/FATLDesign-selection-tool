@@ -23,7 +23,11 @@ jobs:
         run: |
           install.packages(c("shiny", "rsconnect"), type = "binary")
         shell: Rscript {0}
-      - name: Push to shiny.io
+      - name: Setup rsconnect
         run: |
-          Rscript -e "rsconnect::setAccountInfo(name='abohyndoe', token=${{secrets.SHINYAPPS_TOKEN}}, secret=${{secrets.SHINYAPPS_SECRET}})"
-          Rscript -e "rsconnect::deployApp(appName = 'fatldesign-selection-tool')" 
+          rsconnect::setAccountInfo(name='abohyndoe', token=${{secrets.SHINYAPPS_TOKEN}}, secret=${{secrets.SHINYAPPS_SECRET}})
+        shell: Rscript {0}
+      - name: Deploy app
+        run: |
+          rsconnect::deployApp(appName = 'fatldesign-selection-tool')
+        shell: Rscript {0}
