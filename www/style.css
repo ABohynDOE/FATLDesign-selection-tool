@@ -2,6 +2,11 @@ p, li, div {
   font-size: 12pt;
 }
 
+/* Non-bold text for checkbox title */
+.not_bold label {
+  font-weight:normal;
+}
+
 /* Generate button replicate*/
 .in-text-button {
   display: inline-block;

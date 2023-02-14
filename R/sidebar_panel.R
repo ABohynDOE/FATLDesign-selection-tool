@@ -34,7 +34,7 @@ sidebar_panel <- sidebarPanel(
     max = 20,
     value = 10
   ),
-  
+
   # Currently resolution is uniquely defined by the runsize
   # # Resolution
   # selectInput("resolution",
@@ -49,19 +49,21 @@ sidebar_panel <- sidebarPanel(
   # Design table attributes
   tags$hr(style = "border-color: #525354;"),
   h3("Table attributes:"),
-  p("Select the design properties to display in the table"),
 
   # Design characteristics to display
-  checkboxGroupInput(
-    inputId = "characteristics",
-    label = h4("Attributes for output table"),
-    choices = c(
-      "Columns" = "cols",
-      "GWLP" = "full",
-      "Word counts" = "general",
-      "Type-specific word counts" = "type_spe"
+  div(
+    checkboxGroupInput(
+      inputId = "characteristics",
+      label = "Select the design properties to display in the table:",
+      choices = c(
+        "Columns" = "cols",
+        "GWLP" = "full",
+        "Word counts" = "general",
+        "Type-specific word counts" = "type_spe"
+      ),
+      selected = c("cols", "full")
     ),
-    selected = c("cols", "full")
+    class = "not_bold"
   ),
 
   # Number of designs
