@@ -1,7 +1,7 @@
 library(reactable)
-# Information tab ----
+# Contents tab ----
 information_tab <- tabPanel(
-  title = "Information",
+  title = "Contents",
   p(),
   withMathJax(
     p("The table below shows all the design cases with \\(N\\) runs, \\(m\\) four-level factors and \\(n\\) two-level factors covered in the catalog.")
@@ -12,11 +12,11 @@ information_tab <- tabPanel(
 
   # Info on how to use the catalog
   p(
-    "To explore the catalog, select the characterisitics of your design of interest in the",
+    "To explore the catalog, select the design characteristics of interest in the",
     tags$b("Design characteristics"),
     "section of the side panel and click on the",
     span("Generate table", class = "in-text-button"),
-    "button. The table will then be displayed in the 'Catalog' tab of this panel."
+    "button. The table will then be displayed in the 'Output' tab of this panel."
   ),
   p(
     "You can choose which information is shown in the table.",
@@ -26,7 +26,7 @@ information_tab <- tabPanel(
     tags$ul(
       tags$li(
         tags$b("Columns:"),
-        "The column numbers of the effects in a full factorial design with
+        "The column numbers of the effects in a full factorial two-level design in Yates ordering with
                   \\(N\\) runs that define the added factors in the four-and-two-level
                   design. See the tab 'Effect ordering' for further explanation."
       ),
@@ -50,17 +50,18 @@ information_tab <- tabPanel(
   )
 )
 
-# Catalog tab ----
+# Output tab ----
 catalog_tab <- tabPanel(
-  title = "Catalog",
-  h3("Selected designs"),
+  title = "Output",
+  h3("Further design selection"),
   p(
-    "The interactive table below shows the designs that you have selected.",
-    "You can use any of the column header to sort the designs accordingly, and the boxes below the header to filter the designs based on certain values for the columns.",
+    "The interactive table below shows the characteristics for the designs with the run size, number of four-level factors and number of two-level factors you specified in the left panel.",
+    "You can use any of the column headers to sort the designs accordingly, and the boxes below the header to specify values to filter the table.",
     "To sort using a second column, press `Shift` while clicking on the column header."
   ),
   p(
-    "You can use the 'Download table' button below to download the selected designs in table as an excel file.",
+    "Using the tick boxes, you can indicate designs of particular interest.",
+    "You can use the 'Download table' button below to download a table with the characteristics of these designs as an excel file.",
     "The designs in the Table will be ordered according to their ID."
   ),
   downloadButton(
@@ -137,11 +138,7 @@ contact_tab <- tabPanel(
   h3("Contact us"),
   p(
     "If you have a question or need more specific information, please contact us
-    by mail at",
-    a(
-      "alexandre.bohyn@kuleuven.be",
-      href = "mailto:alexandre.bohyn@kuleuven.be"
-    )
+    by mail at alexandre [dot] bohyn [at] kuleuven [dot] be"
   ),
   h3("Bug report"),
   p("If there is a bug with the application or you would like to contribute,
