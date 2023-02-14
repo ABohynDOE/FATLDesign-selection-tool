@@ -26,6 +26,14 @@ server <- function(input, output, session) {
 
   # Only update table if button is pressed
   dataInput <- eventReactive(input$generate, {
+    # Currently the resolution is uniquely defined by the runsize so the user 
+    # doesn't need to input it
+    if (input$runsize < 64) {
+      resolution <- 3
+    } else {
+      resolution <- 4
+    }
+    
     # Generate path to characteristics file
     path <- paste0(
       "data/N",
@@ -35,7 +43,7 @@ server <- function(input, output, session) {
       "_n",
       input$nbr_tlvl_fac,
       "_R",
-      input$resolution,
+      resolution,
       ".rds"
     )
     # Check that the file exists
@@ -73,7 +81,7 @@ server <- function(input, output, session) {
   # Change the panel to display the catalog when the "Generate" button is pressed
   # to avoid confusion for the user
   observeEvent(input$generate, {
-    updateTabsetPanel(session, "tabs", selected = "Catalog")
+    updateTabsetPanel(session, "tabs", selected = "Output")
   })
 
   # Reactable for the design is generated using the reactive data source
@@ -99,6 +107,7 @@ server <- function(input, output, session) {
 
     data %>%
       reactable(
+        defaultPageSize = input$n_designs,
         filterable = TRUE,
         sortable = TRUE,
         columns = columns_list,
@@ -119,17 +128,32 @@ server <- function(input, output, session) {
 
   # Design table download button ----
   output$downloadTable <- downloadHandler(
-    # All design information should be part of the name
     filename = function() {
+      # Currently the resolution is uniquely defined by the runsize so the user 
+      # doesn't need to input it
+      if (input$runsize < 64) {
+        resolution <- 3
+      } else {
+        resolution <- 4
+      }
+
+      # All design information should be part of the name
       sprintf(
         "N%s_m%s_n%s_R%s_design_table.xlsx",
         input$runsize,
         input$nbr_flvl_fac,
         input$nbr_tlvl_fac,
-        input$resolution
+        resolution
       )
     },
     content = function(file) {
+      # Currently the resolution is uniquely defined by the runsize so the user 
+      # doesn't need to input it
+      if (input$runsize < 64) {
+        resolution <- 3
+      } else {
+        resolution <- 4
+      }
       data <- dataInput() %>%
         # We only want to export selected designs
         dplyr::slice(selected()) %>%
@@ -140,7 +164,7 @@ server <- function(input, output, session) {
           N = input$runsize,
           n = input$nbr_tlvl_fac,
           m = input$nbr_flvl_fac,
-          resolution = input$resolution
+          resolution = resolution
         ) %>%
         writexl::write_xlsx(file)
     }
@@ -150,12 +174,19 @@ server <- function(input, output, session) {
   # Download the designs selected in the data table
   output$downloadDesigns <- downloadHandler(
     filename = function() {
+      # Currently the resolution is uniquely defined by the runsize so the user 
+      # doesn't need to input it
+      if (input$runsize < 64) {
+        resolution <- 3
+      } else {
+        resolution <- 4
+      }
       sprintf(
         "N%s_m%s_n%s_R%s_selected_designs.txt",
         input$runsize,
         input$nbr_flvl_fac,
         input$nbr_tlvl_fac,
-        input$resolution
+        resolution
       )
     },
     content = function(file) {

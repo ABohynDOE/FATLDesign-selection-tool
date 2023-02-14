@@ -1,5 +1,5 @@
 sidebar_panel <- sidebarPanel(
-  h3("Design characteristics:"),
+  h3("Selection parameters:"),
 
   # Run size
   selectInput(
@@ -34,16 +34,17 @@ sidebar_panel <- sidebarPanel(
     max = 20,
     value = 10
   ),
-
-  # Resolution
-  selectInput("resolution",
-    label = h4("Resolution"),
-    choices = list(
-      "3" = 3,
-      "4" = 4
-    ),
-    selected = 3
-  ),
+  
+  # Currently resolution is uniquely defined by the runsize
+  # # Resolution
+  # selectInput("resolution",
+  #   label = h4("Resolution"),
+  #   choices = list(
+  #     "3" = 3,
+  #     "4" = 4
+  #   ),
+  #   selected = 3
+  # ),
 
   # Design table attributes
   tags$hr(style = "border-color: #525354;"),
@@ -53,7 +54,7 @@ sidebar_panel <- sidebarPanel(
   # Design characteristics to display
   checkboxGroupInput(
     inputId = "characteristics",
-    label = h4("Characteristics to display"),
+    label = h4("Attributes for output table"),
     choices = c(
       "Columns" = "cols",
       "GWLP" = "full",
