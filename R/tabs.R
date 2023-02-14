@@ -56,7 +56,7 @@ catalog_tab <- tabPanel(
   h3("Further design selection"),
   p(
     "The interactive table below shows the characteristics for the designs with the run size, number of four-level factors and number of two-level factors you specified in the left panel.",
-    "You can use any of the column headers to sort the designs accordingly, and the boxes below the header to specify values to filter the table.",
+    "You can click on the column headers of the ID, the word count and the type-specific word count to sort the designs, and the boxes below the header to specify values to filter the table.",
     "To sort using a second column, press `Shift` while clicking on the column header."
   ),
   p(
@@ -86,21 +86,26 @@ catalog_tab <- tabPanel(
 # Effect coding tab ----
 effect_coding_tab <- tabPanel(
   title = "Effect ordering",
-  h3("Representing factors as column numbers"),
+  h3("Representing factors as numbers"),
   withMathJax(
     p(
-      "When a two-level design has \\(N\\) runs, it has \\(k = log_2(N)\\) basic factors, that is, two-level factors that are independent of each other.",
-      "When more than \\(k\\) factors are needed in the design, the additional factors are generated as linear combinations of the basic factors.",
-      "If we represent the basic factors with individual lowercase letters starting with \\(\\bf{a}\\), then a linear combination of basic factors can be written as a word, called a",
-      tags$span("generator", style = "font-weight: bold"),
-      ". For example, a factor created from the linear combination of the first three basic factors would have \\(\\bf{abc}\\) as generator."
+      "A two-level design with \\(N\\) runs has \\(k = log_2(N)\\) basic factors.",
+      "These factors specify all the treatment combinations of a \\(2^k\\) full factorial design.",
+      "Assuming that the factor levels are -1 and +1, additional factors are generated as products of the basic factors.",
+      "If we represent the basic factors with individual lowercase letters starting with \\(\\bf{a}\\), then a product of basic factors can be written by combining the letters of the basic factors.",
+      "Such products are called",
+      tags$span("generators", style = "font-weight: bold"),
+      ".",
+      "For example, a factor created as the product of the first, third and fourth basic factors would have \\(\\bf{acd}\\) as generator."
     ),
     p(
-      "However, for large combinations of basic factors, this can be cumbersome to write and read.",
-      "Therefore, we prefer to store these generators as numbers instead of words.",
+      "When a large number of basic factors is involved, the letter notation of the generators can be cumbersome.",
+      "The solution is to store them as numbers instead of words.",
       "Since every number can be uniquely decomposed into powers of 2, each generator can be associated with a combination of powers of 2.",
-      "To do this, each basic factor is assigned to a specific power of 2 and the sum of these powers creates the number defining the generator.",
-      "The Figure below show that process for the generator \\(\\bf{abc}\\)."
+      "To do this, each basic factor is assigned to a specific power of 2.",
+      "For example, \\(\\bf{a}\\) is represented by 1,  \\(\\bf{b}\\) by 2, and \\(\\bf{c}\\) by 4.",
+      "The sum of these powers creates the number defining the generator",
+      "The figure below show that process for the generator \\(\\bf{acd}\\)."
     )
   ),
   img(
@@ -108,15 +113,14 @@ effect_coding_tab <- tabPanel(
   ),
   withMathJax(
     p(
-      "With this logic, basic factors are represented by numbers that are whole power of 2.",
-      "For example, \\(\\bf{a}\\) is represented by number 1,  \\(\\bf{b}\\) by number 2,  \\(\\bf{c}\\) by number 4, etc... "
+      "With this notation, basic factors are represented by numbers that are powers of 2."
     )
   ),
   h3("Constructing a design from its column numbers"),
   p(
-    "When constructing a design with four-level factors and two-level factors, the four-level factors are always constructed from pairs of unused basic factors.",
-    "The remaining basic factors are then joined with the added factors and this new set forms all the two-level factors in the design.",
-    "The figure belows details this process for a 64-run design with 5 added factors."
+    "When constructing a design with four-level factors and two-level factors, the four-level factors are always constructed from pairs of basic factors.",
+    "The two-level factors in the design include the remaining basic factors (if any) and the added factors.",
+    "The figure below details this process for a 64-run design with 2 four-level factors, 2 basic two-level factors and 5 added two-level factors."
   ),
   img(
     src = "design_generation.png", align = "center", alt = "Design generation diagram",
@@ -124,10 +128,8 @@ effect_coding_tab <- tabPanel(
   ),
   withMathJax(
     p(
-      "Since the pairs used to construct the four-level parts are always the same, only the added factors actually vary between different designs.",
-      "That is, all 64-run designs with two four-level factors will use the pair \\((1,2)\\) to generate factor \\(\\bf{A}\\), and  the pair \\((4,8)\\) to generate factor \\(\\bf{B}\\).",
-      "For this reason, only the column numbers of the added factors are given in the catalog.",
-      "But, as the Figure shows, it is simple to reconstruct any design only from the added factors, given its runsize."
+      "Only the column numbers of the added factors are given in the catalog.",
+      "But, as the figure shows, it is simple to reconstruct any design only from the added factors, given its run size."
     )
   )
 )
