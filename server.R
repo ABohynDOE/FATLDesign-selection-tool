@@ -28,7 +28,7 @@ server <- function(input, output, session) {
   dataInput <- eventReactive(input$generate, {
     # Currently the resolution is uniquely defined by the runsize so the user 
     # doesn't need to input it
-    if (input$runsize < 64) {
+    if (input$runsize == 16 || input$runsize == 32) {
       resolution <- 3
     } else {
       resolution <- 4
