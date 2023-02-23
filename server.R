@@ -26,7 +26,7 @@ server <- function(input, output, session) {
 
   # Only update table if button is pressed
   dataInput <- eventReactive(input$generate, {
-    # Currently the resolution is uniquely defined by the runsize so the user 
+    # Currently the resolution is uniquely defined by the run size so the user 
     # doesn't need to input it
     if (input$runsize == 16 || input$runsize == 32) {
       resolution <- 3
@@ -129,7 +129,7 @@ server <- function(input, output, session) {
   # Design table download button ----
   output$downloadTable <- downloadHandler(
     filename = function() {
-      # Currently the resolution is uniquely defined by the runsize so the user 
+      # Currently the resolution is uniquely defined by the run size so the user 
       # doesn't need to input it
       if (input$runsize < 64) {
         resolution <- 3
@@ -149,11 +149,11 @@ server <- function(input, output, session) {
     content = function(file) {
       # Currently the resolution is uniquely defined by the runsize so the user 
       # doesn't need to input it
-      if (input$runsize < 64) {
-        resolution <- 3
-      } else {
-        resolution <- 4
-      }
+      # if (input$runsize < 64) {
+      #   resolution <- 3
+      # } else {
+      #   resolution <- 4
+      # }
       data <- dataInput() %>%
         # We only want to export selected designs
         dplyr::slice(selected()) %>%
@@ -164,7 +164,8 @@ server <- function(input, output, session) {
           N = input$runsize,
           n = input$nbr_tlvl_fac,
           m = input$nbr_flvl_fac,
-          resolution = resolution
+          # Resolution can be inferred from the WLP so no need to add it to the table
+          # resolution = resolution
         ) %>%
         writexl::write_xlsx(file)
     }
@@ -239,3 +240,4 @@ server <- function(input, output, session) {
       HTML()
   })
 }
+
