@@ -1,22 +1,26 @@
 library(dplyr)
 
-# Catalog coverage
-coverage <- data.frame(
-  N = c(16, 16, 32, 32, 64, 64, 64, 64, 64, 64, 128, 128, 128),
-  m = factor(
-    c(1, 2, 1, 2, 1, 2, 3, 1, 2, 3, 1, 2, 3),
-    levels = c(1, 2, 3)
-  ),
-  n_min = c(2, 1, 3, 1, 4, 2, 1, 4, 3, 1, 5, 3, 1),
-  n_max = c(12, 9, 20, 20, 20, 20, 20, 13, 11, 6, 20, 20, 20),
-  resolution = c(3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4)
-) %>%
-  arrange(resolution, N) %>%
-  mutate(
-    resolution = as.roman(resolution)) %>%
-  select(N, resolution, m, n_min, n_max) %>%
-  filter(N != 64 | resolution != as.roman(3))
+file_list <- list.files('data/')
 
+#' Retrieve the four informative values from a file name: run size, number of 
+#' four-level factors, number of two-level factors, resolution
+file_info <- function(filename){
+  out <- filename |>
+    stringr::str_extract_all("\\d+") |>
+    unlist() |>
+    as.integer()
+  names(out) <- c('N','m','n','Resolution')
+  out
+}
+
+catalog_info <- purrr::map(file_list, file_info)
+catalog_info <- do.call(rbind, catalog_info)
+
+coverage <- catalog_info |>
+  tibble::as_tibble() |>
+  group_by(N, m, Resolution) |>
+  summarise(n_min = min(n), n_max = max(n), .groups = "drop") |>
+  mutate(Resolution = as.roman(Resolution))
 
 # Turns a matrix into a string where entries are tab separated
 create_text <- function(m){

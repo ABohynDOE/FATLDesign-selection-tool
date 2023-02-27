@@ -10,7 +10,11 @@ server <- function(input, output, session) {
   # Catalog coverage data table ----
   output$coverage <- renderReactable(
     coverage %>%
-      mutate(resolution = as.character(resolution)) %>%
+      mutate(Resolution = as.character(Resolution)) %>%
+      # rename(
+      #   "n ₘᵢₙ" = "n_min",
+      #   "n ₘₐₓ" = "n_max",
+      # ) %>%
       reactable(
         sortable = FALSE,
         defaultColDef = colDef(
