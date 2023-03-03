@@ -35,17 +35,6 @@ sidebar_panel <- sidebarPanel(
     value = 10
   ),
 
-  # Currently resolution is uniquely defined by the runsize
-  # # Resolution
-  # selectInput("resolution",
-  #   label = h4("Resolution"),
-  #   choices = list(
-  #     "3" = 3,
-  #     "4" = 4
-  #   ),
-  #   selected = 3
-  # ),
-
   # Design table attributes
   tags$hr(style = "border-color: #525354;"),
   h3("Table attributes:"),
