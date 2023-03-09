@@ -1,0 +1,70 @@
+---
+title: "FATLD in R"
+output: html_notebook
+---
+
+```{r warning=FALSE, include=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(reticulate)
+
+fatld <- import("fatld")
+```
+
+
+We first load the 82 $4^12^7$ 32-run designs of the catalog.
+To characterize them, we use the `Design` object from the `fatld` package.
+This package is loaded in `R` using the `reticulate` package.
+The only information needed to build the design are:
+
+- the run size
+- the number of four-level factors
+- the column numbers
+
+We extract these information for the data files of the catalog and format them
+into a list to be processed by the `purrr::map` function later.
+
+```{r}
+load('../data/N32_m1_n7_R3.rds')
+
+design_info <- data |>
+  select(columns) |>
+  mutate(
+    m = 1L,
+    run_size = 32L,
+    .before = "columns"
+  ) |>
+  split(1:nrow(data))
+```
+
+Now, we create a small function to extract the number of words of length 3 of 
+type 0 and type 1 of each design.
+Then, we plot them on a scatter plot.
+
+```{r}
+#' Function to compute the A_3 value of a design
+compute_A3 <- function(df){
+  # Columns must be a list of integer
+  cols <- as.integer(unlist(strsplit(df$columns, ",")))
+  design <- fatld$Design(df$run_size, df$m, cols)
+  # WLP values start on A_3
+  design$twlp()[1] |> unlist()
+}
+
+A_3 <- purrr::map(design_info, compute_A3) 
+df <- as.data.frame(do.call(rbind, A_3))
+colnames(df) <- c('A_30', 'A_31')
+
+df |>
+  group_by(A_30, A_31) |>
+  summarise(n = as.factor(n()), .groups = "drop") |>
+  ggplot(aes(A_30, A_31, color = n)) +
+  geom_point() +
+  theme_classic()
+```
+
+Now we can look more precisely at the designs with $A_3=0$ or $A_3=1$ and see if 
+their WLP can differentiate them (up to $A_4$).
+If not, we can then look at the number of clear 2FI for each design.
+We could also try to look at the ALP and see what it says about the designs.
