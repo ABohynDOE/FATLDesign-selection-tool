@@ -7,14 +7,10 @@ source("R/global.R") # Retrieve coverage data
 source("R/mixed_level_design.R") # Function to generate a mixed-level design
 
 server <- function(input, output, session) {
-  # Catalog coverage data table ----
-  output$coverage <- renderReactable(
+  
+  output$coverage <- renderReactable({
     coverage %>%
       mutate(Resolution = as.character(Resolution)) %>%
-      # rename(
-      #   "n ₘᵢₙ" = "n_min",
-      #   "n ₘₐₓ" = "n_max",
-      # ) %>%
       reactable(
         sortable = FALSE,
         defaultColDef = colDef(
@@ -26,7 +22,7 @@ server <- function(input, output, session) {
         ),
         highlight = TRUE
       )
-  )
+  })
 
   # Only update table if button is pressed
   dataInput <- eventReactive(input$generate, {
@@ -50,38 +46,17 @@ server <- function(input, output, session) {
       resolution,
       ".rds"
     )
+    
     # Check that the file exists
     file_ok <- file.exists(path)
     validate(need(file_ok, "This design case is not covered in the catalog !"))
+    
     # Read the table as a dataframe
     load(path)
-    # Extract the column names
-    col_names <- colnames(data)
-    # Create the subset of columns based on the characteristics chosen
-    var_list <- c()
-    if ("cols" %in% input$characteristics) {
-      var_list <- append(var_list, "columns")
-    }
-    if ("full" %in% input$characteristics) {
-      var_list <- append(var_list, "wlp")
-    }
-    if ("general" %in% input$characteristics) {
-      new_vars <- col_names[grepl("A\\d$", col_names)]
-      var_list <- append(var_list, new_vars)
-    }
-    if ("type_spe" %in% input$characteristics) {
-      new_vars <- col_names[grepl("A\\d\\.\\d", col_names)]
-      var_list <- append(var_list, new_vars)
-    }
-    # Make the selection based on the subset of variables
-    data %>%
-      select(all_of(var_list)) %>%
-      # Rename the variables in title case except WLP
-      rename_all(.funs = stringr::str_to_title) %>%
-      rename_with(stringr::str_to_upper, starts_with("W")) %>%
-      tibble::rowid_to_column("ID")
+  
+    data
   })
-
+  
   # Change the panel to display the catalog when the "Generate" button is pressed
   # to avoid confusion for the user
   observeEvent(input$generate, {
@@ -90,9 +65,41 @@ server <- function(input, output, session) {
 
   # Reactable for the design is generated using the reactive data source
   output$table <- renderReactable({
+    
+    # Data is generated based on the side panel information
     data <- dataInput()
+    col_names <- colnames(data)
+    
+    # `Real` columns are selected in data set based on the selected column names
+    # in the side panel
+    real_colnames_list <- c()
+    if ("cols" %in% input$characteristics) {
+      real_colnames_list <- append(real_colnames_list, "columns")
+    }
+    if ("full" %in% input$characteristics) {
+      real_colnames_list <- append(real_colnames_list, "wlp")
+    }
+    if ("general" %in% input$characteristics) {
+      new_vars <- col_names[grepl("A\\d$", col_names)]
+      real_colnames_list <- append(real_colnames_list, new_vars)
+    }
+    if ("type_spe" %in% input$characteristics) {
+      new_vars <- col_names[grepl("A\\d\\.\\d", col_names)]
+      real_colnames_list <- append(real_colnames_list, new_vars)
+    }
+    
+    # Data is filtered using the `real` column names just generated and some
+    # columns are renamed for aesthetics
+    data <- data %>%
+      select(all_of(real_colnames_list)) %>% # Rename the variables in title case except WLP
+      rename_all(.funs = stringr::str_to_title) %>%
+      rename_with(stringr::str_to_upper, starts_with("W")) %>%
+      tibble::rowid_to_column("ID")
+    
+    # We need the "beautified" column names to define their look in the react
+    # table
     columns <- colnames(data)
-
+    
     # `WLP` and `Columns` columns should not be sortable and filterable
     define_colDef <- function(name) {
       col_definition <- colDef(minWidth = 70)
@@ -130,7 +137,7 @@ server <- function(input, output, session) {
   # Dynamically retrieve selected rows in the table
   selected <- reactive(getReactableState("table", "selected"))
 
-  # Design table download button ----
+  
   output$downloadTable <- downloadHandler(
     filename = function() {
       # Currently the resolution is uniquely defined by the run size so the user 
@@ -175,8 +182,6 @@ server <- function(input, output, session) {
     }
   )
 
-  # Design download button ----
-  # Download the designs selected in the data table
   output$downloadDesigns <- downloadHandler(
     filename = function() {
       # Currently the resolution is uniquely defined by the runsize so the user 
