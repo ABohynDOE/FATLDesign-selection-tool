@@ -203,21 +203,20 @@ server <- function(input, output, session) {
       # First line of the file should give information about the designs created
       info <- paste(
         # We only want to export selected designs
-        length(selected()),
+        (as.integer(input$nbr_flvl_fac) + as.integer(input$nbr_tlvl_fac)),
         as.integer(input$runsize),
-        as.integer(input$nbr_flvl_fac),
-        as.integer(input$nbr_tlvl_fac),
-        "\n",
+        length(selected()),
         collapse = " "
       )
       write(info, file)
       # Only column numbers are needed
       cols <- dataInput() %>%
         dplyr::slice(selected()) %>%
-        pull(Columns)
+        pull(columns)
       # Columns must be transformed into integer
       cols_vec <- lapply(str_split(cols, ","), as.integer)
-      # Each column set in the list gives a matrix
+      
+      # Function to generate a mixed-level design based on the columns
       make_design <- function(x) {
         mixed_level_design(
           as.double(input$runsize),
@@ -225,9 +224,10 @@ server <- function(input, output, session) {
           x
         )
       }
+      # Each column set in the list gives a matrix
       matrices <- lapply(cols_vec, make_design)
       # Matrices must be text to later write it to the file as a single line
-      matrices_text <- text <- lapply(matrices, create_text)
+      matrices_text <- lapply(matrices, create_text)
       index <- 1
       design_id_vec <- selected()
       for (matrix_text in matrices_text) {

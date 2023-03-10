@@ -27,7 +27,10 @@ create_text <- function(m){
   res <- ""
   m <- formatC(m, width = max(nchar(trunc(m))), flag = "", format = "d")
   for(i in 1:nrow(m)){
-    res <- paste0(res, paste0(paste(as.character(m[i, 1:ncol(m)]), collapse = "\t"), "\n"))
+    res <- paste0(res, paste(as.character(m[i, 1:ncol(m)]), collapse = " "))
+    if (i < nrow(m)) {
+      res <- paste0(res, "\n")
+    }
   }
   return(res)
 }

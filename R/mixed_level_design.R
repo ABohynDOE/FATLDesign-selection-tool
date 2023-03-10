@@ -109,14 +109,14 @@ mixed_level_design <- function(runsize = double(),
   final_col_set <- sort(unique(final_col_set))
 
   # Generate the two-level part of the design
-  tl_design <- custom_design(runsize, final_col_set, base_mat)
+  tl_design <- (custom_design(runsize, final_col_set, base_mat) + 1) / 2
 
   # Generate the four-level factors independently
   fl_design <- matrix(nrow = runsize, ncol = m)
   index <- 1
   for (pair in pf_pairs) {
     sub_mat <- custom_design(runsize, pair, base_mat)
-    fl_design[, index] <- (sub_mat[, 1] + 1) + (sub_mat[, 2] + 1) / 2 + 1
+    fl_design[, index] <- (sub_mat[, 1] + 1) + (sub_mat[, 2] + 1) / 2
     index <- index + 1
   }
 
