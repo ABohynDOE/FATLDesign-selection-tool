@@ -236,6 +236,7 @@ server <- function(input, output, session) {
         write(matrix_text, file, append = TRUE)
         index <- index + 1
       }
+      write("-1", file, append = TRUE)
     }
   )
 
