@@ -1,8 +1,9 @@
 introduction <- p(
   "This web application is an interface to the catalog of regular designs with four-level and two-level factors from the paper",
-  span(
+  a(
     "Enumeration of regular fractional factorial designs with four-level and two-level factors",
-    style = "font-weight:bold"
+    style = "font-weight:bold",
+    href = "https://arxiv.org/abs/2303.05811"
   ),
   "by Alexandre Bohyn",
   a(
