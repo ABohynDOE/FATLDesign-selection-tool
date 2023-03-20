@@ -8,7 +8,8 @@ source("R/tabs.R", local = TRUE)
 ui <- fluidPage(
   # Include css style
   tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
+    tags$link(rel = "stylesheet", type = "text/css", href = "style.css"),
+    tags$link(rel = "icon", type = "image/gif/png", href="icon.png")
   ),
 
   # Application title
