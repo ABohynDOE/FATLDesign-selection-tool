@@ -3,7 +3,7 @@ introduction <- p(
   a(
     "Enumeration of regular fractional factorial designs with four-level and two-level factors",
     style = "font-weight:bold",
-    href = "https://arxiv.org/abs/2303.05811"
+    href = "https://doi.org/10.1093/jrsssc/qlad031"
   ),
   "by Alexandre Bohyn",
   a(
