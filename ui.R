@@ -11,6 +11,8 @@ ui <- fluidPage(
     tags$link(rel = "stylesheet", type = "text/css", href = "style.css"),
     tags$link(rel = "icon", type = "image/gif/png", href="icon.png")
   ),
+  
+  tags$style(type = "text/css", ".irs-grid-pol.small {height: 0px;}"),
 
   # Application title
   titlePanel("Catalog of regular four-and-two-level designs"),
