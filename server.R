@@ -23,7 +23,29 @@ server <- function(input, output, session) {
         highlight = TRUE
       )
   })
-
+  
+  # Download button for the bibtex file of the reference
+  output$downloadBib <- downloadHandler(
+    filename = "reference.bib",
+    content = function(file){
+      file_conn <- file(file)
+      writeLines(
+        text = "@article{bohyn2023enumeration,
+  title = {Enumeration of Regular Fractional Factorial Designs with Four-Level and Two-Level Factors},
+  author = {Bohyn, Alexandre and Schoen, Eric D. and Goos, Peter},
+  year = {2023},
+  month = may,
+  journal = {Journal of the Royal Statistical Society Series C: Applied Statistics},
+  issn = {0035-9254},
+  doi = {10.1093/jrsssc/qlad031}
+}
+",
+        con = file_conn
+      )
+        close(file_conn)
+    }
+  )
+  
   # Only update table if button is pressed
   dataInput <- eventReactive(input$generate, {
     # Currently the resolution is uniquely defined by the run size so the user 

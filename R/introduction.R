@@ -3,7 +3,7 @@ introduction <- p(
   a(
     "Enumeration of regular fractional factorial designs with four-level and two-level factors",
     style = "font-weight:bold",
-    href = "https://arxiv.org/abs/2303.05811"
+    href = "https://doi.org/10.1093/jrsssc/qlad031"
   ),
   "by Alexandre Bohyn",
   a(
@@ -23,5 +23,16 @@ introduction <- p(
     style = "color:#A6CE39;",
     href = "https://orcid.org/0000-0002-3854-6506"
   ),
-  ". Please cite our paper if you are using this catalog for your work."
+  ". If you are using this catalog for your work, please cite our paper as follows:",
+  br(),
+  tags$blockquote(
+      "Bohyn et al., Enumeration of regular fractional factorial designs with four-level and two-level factors,",
+      tags$cite("Journal of the Royal Statistical Society Series C: Applied Statistics,"),
+      "2023;",
+      style = "font-size:10pt;"
+  ),
+  downloadButton(
+    outputId = "downloadBib",
+    label = "Download .bib"
+  )
 )
