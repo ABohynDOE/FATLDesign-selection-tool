@@ -53,9 +53,9 @@ sidebar_panel <- sidebarPanel(
     selected = c("index", "cols")
   ),
   bsCollapse(
-    open = "WLP",
+    open = "GWLP",
     bsCollapsePanel(
-      title = "WLP",
+      title = "GWLP",
       checkboxGroupInput(
         inputId = "characteristics",
         label = NULL,

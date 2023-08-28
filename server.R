@@ -9,6 +9,28 @@ source("R/mixed_level_design.R") # Function to generate a mixed-level design
 
 server <- function(input, output, session) {
   
+  output$permutations <- renderReactable({
+    read.csv('permutations.csv', header = TRUE, sep = ";") |>
+      select(label, p1, p2) |>
+      rename(
+        Notation = "label",
+        `First\npermutation` = "p1",
+        `Second\npermutation` = "p2"
+      )|>
+      reactable(
+        sortable = FALSE,
+        defaultColDef = colDef(
+          searchable = FALSE,
+          align = "center",
+          minWidth = 30,
+          headerStyle = list(background = "#f7f7f8"),
+          header = function(value) gsub("_", " ", value, fixed = TRUE)
+        ),
+        highlight = TRUE,
+        defaultPageSize = 12
+      )
+  })
+  
   output$coverage <- renderReactable({
     coverage %>%
       mutate(Resolution = as.character(Resolution)) %>%
@@ -140,7 +162,7 @@ server <- function(input, output, session) {
       real_colnames_list <- append(real_colnames_list, "alpha_wlp")
     }
     if ("wvalues" %in% v$characteristics) {
-      new_vars <- col_names[grepl("w\\d{1,2}", col_names)]
+      new_vars <- col_names[grepl("w\\d{1,2}$", col_names)]
       real_colnames_list <- append(real_colnames_list, new_vars)
     }
     if ("w2wlp" %in% v$characteristics) {
@@ -158,12 +180,15 @@ server <- function(input, output, session) {
     lookup <- c(
       ID = "index",
       Columns = "columns",
-      WLP = "wlp",
+      GWLP = "wlp",
       `β* WLP` = "beta_star_wlp",
       `α WLP` = "alpha_wlp",
       `W₂ WLP` = "w2_wlp",
       `Blocking\nfactor` = "factor",
       Perm. = 'permutations',
+      `A₃` = "A3",
+      `A₄` = "A4",
+      `A₅` = "A5",
       `β*₃` = "B3",
       `β*₄` = "B4",
       `β*₅` = "B5",
@@ -188,28 +213,6 @@ server <- function(input, output, session) {
             pattern = "w", 
             replacement = "ω"
           )
-      ) |>
-      # Rename simply the A values
-      rename_with(
-        .cols = matches("A\\d"),
-        .fn = ~ str_replace(
-          string = .x,
-          pattern = "\\d",
-          replacement = ~ intToUtf8(as.numeric(.x) + 8320)
-        )
-      ) |>
-      # Rename the type-specific words
-      rename_with(
-        .cols = matches("A\\d\\.\\d"),
-        .fn = ~ str_replace(
-          string = .x,
-          pattern = "(?<=A)\\d",
-          replacement = ~ intToUtf8(as.numeric(.x) + 8320)
-        ) |>
-          str_replace(
-            pattern = "(?<=A)\\d",
-            replacement = ~ intToUtf8(as.numeric(.x) + 8320)
-          )
       )
     
     
@@ -224,6 +227,9 @@ server <- function(input, output, session) {
         col_definition$sortable <- FALSE
         col_definition$filterable <- FALSE
         col_definition$minWidth <- 200
+      } else if (name == "Perm.") {
+        col_definition$sortable <- FALSE
+        col_definition$filterable <- FALSE
       }
       col_definition
     }

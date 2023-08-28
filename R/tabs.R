@@ -82,7 +82,9 @@ information_tab <- tabPanel(
           ),
           tags$li(
             tags$b("4LF permutations:"),
-            "Permutations of the four-level factors of the design, needed to obtain the \\((\\mathbf{W}_{\\beta^{\\star}})\\) presented in the table."
+            "Permutations of the four-level factors of the design, needed to obtain the \\((\\mathbf{W}_{\\beta^{\\star}})\\) presented in the table.",
+            "The permutations are labelled using a \\(u_{i}\\) notation.",
+            "To know the actual permutation corresponding to the notation, see the 'Permutations' tab."
           )
         )
       ),
@@ -130,8 +132,8 @@ catalog_tab <- tabPanel(
   reactableOutput("table"),
   htmlOutput("designs_selected"),
   p(
-    "To download the designs, click on the 'Download designs' button below.",
-    "In the file, the designs are ordered by ID and the ID of the design is mentionned before the design matrix"
+    "To download the designs, click on the 'Download selected designs' button below.",
+    "In the file, the designs are ordered by ID and the ID of the design is mentioned before the design matrix"
   ),
   downloadButton(
     outputId = "downloadDesigns",
@@ -189,6 +191,24 @@ effect_coding_tab <- tabPanel(
       "But, as the figure shows, it is simple to reconstruct any design only from the added factors, given its run size."
     )
   )
+)
+
+# Permutations ----
+permutations_tab <- tabPanel(
+  title = "Permutations",
+  h3("Permuting the levels of the four-level factors"),
+  p(
+    "When the four-level factors are quantitative, permuting the levels of the factors has an influence on the quality of the design.",
+    "In the output table, the permutations are given using a \\(u_{i}\\) notation.",
+    "The actual permutations corresponding to the notations are given in the table below.",
+    "The base levels of the factors are \\([0,1,2,3]\\), so that if the permutation \\([0,2,1,3]\\) is given, the second and third levels of the factor are inverted."
+  ),
+  br(),
+  p(
+    "For each permutation, a mirror permutation exists, that will yield the same results.",
+    "Thus, both permutations are given in the table."
+  ),
+  reactableOutput("permutations")
 )
 
 # Contact ----

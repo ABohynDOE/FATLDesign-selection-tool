@@ -68,6 +68,7 @@ ui <- fluidPage(
         information_tab,
         catalog_tab,
         effect_coding_tab,
+        permutations_tab,
         contact_tab
       )
     )
