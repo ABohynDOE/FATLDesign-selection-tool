@@ -1,3 +1,5 @@
+library(shinyBS)
+
 sidebar_panel <- sidebarPanel(
   h3("Selection parameters:"),
 
@@ -40,19 +42,67 @@ sidebar_panel <- sidebarPanel(
   h3("Table attributes:"),
 
   # Design characteristics to display
-  div(
-    checkboxGroupInput(
-      inputId = "characteristics",
-      label = "Select the design properties to display in the table:",
-      choices = c(
-        "Columns" = "cols",
-        "GWLP" = "full",
-        "Word counts" = "general",
-        "Type-specific word counts" = "type_spe"
-      ),
-      selected = c("cols", "full")
+  p("Select the design properties to display in the table:"),
+  checkboxGroupInput(
+    inputId = "gen_characteristics",
+    label = NULL,
+    choices = c(
+      "ID" = "index",
+      "Columns" = "cols"
     ),
-    class = "not_bold"
+    selected = c("index", "cols")
+  ),
+  bsCollapse(
+    open = "GWLP",
+    bsCollapsePanel(
+      title = "GWLP",
+      checkboxGroupInput(
+        inputId = "characteristics",
+        label = NULL,
+        choices = c(
+          "GWLP" = "full",
+          "Word counts" = "general",
+          "Type-specific word counts" = "type_spe"
+        ),
+        selected = c("full")
+      )
+    ),
+    bsCollapsePanel(
+      title = "α WLP (qualitative)",
+      checkboxGroupInput(
+        inputId = "characteristics_alpha",
+        label = NULL,
+        choices = c(
+          "α WLP" = "awlp",
+          "ω values" = "wvalues"
+        )
+      )
+    ),
+    bsCollapsePanel(
+      title = "β* WLP (quantitative)",
+      checkboxGroupInput(
+        inputId = "characteristics_beta",
+        label = NULL,
+        choices = c(
+          "β* WLP" = "bwlp",
+          "β* word counts" = "bcounts",
+          "4LF permutations" = "perm"
+        )
+      )
+    ),
+    bsCollapsePanel(
+      title = "W₂ WLP (blocking)",
+      checkboxGroupInput(
+        inputId = "characteristics_w2",
+        label = NULL,
+        choices = c(
+          "W₂ WLP" = "w2wlp",
+          "W₂ word counts" = "w2counts",
+          "Blocking factor" = "factor"
+        )
+      ),
+      style = "default"
+    )
   ),
 
   # Number of designs
@@ -69,5 +119,5 @@ sidebar_panel <- sidebarPanel(
     label = "Generate table",
     icon = icon("table"),
     style = "color: #fff; background-color: #337ab7; border-color: #2e6da4"
-  ),
+  )
 )

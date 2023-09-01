@@ -20,10 +20,14 @@ information_tab <- tabPanel(
   ),
   p(
     "You can choose which information is shown in the table.",
-    "There are four options:"
+    "There are several options, organized in foldable menus:"
   ),
   withMathJax(
     tags$ul(
+      tags$li(
+        tags$b("ID:"),
+        "The index of the design. Specific to each runsize, number of two-level factors, and number of four-level factors"
+      ),
       tags$li(
         tags$b("Columns:"),
         "The column numbers of the effects in a full factorial two-level design in Yates ordering with
@@ -31,20 +35,75 @@ information_tab <- tabPanel(
                   design. See the tab 'Effect ordering' for further explanation."
       ),
       tags$li(
-        tags$b("GWLP:"),
-        "The generalized word length pattern \\((A_{3},A_4,\\ldots,A_{m+n})\\)
+        tags$b("WLP"),
+        tags$ul(
+          tags$li(
+            tags$b("GWLP:"),
+            "The generalized word length pattern \\((A_{3},A_4,\\ldots,A_{m+n})\\)
                 of the design"
-      ),
-      tags$li(
-        tags$b("Word counts:"),
-        "Counts \\(A_l\\) of words with lengths \\(3 \\leq L \\leq 5\\), allowing
+          ),
+          tags$li(
+            tags$b("Word counts:"),
+            "Counts \\(A_i\\) of words with lengths \\(3 \\leq i \\leq 5\\), allowing
                 the user to sort the designs based on these counts. "
-      ),
-      tags$li(
-        tags$b("Type-specific word counts:"),
-        "Type-specific counts \\(A_{l.t}\\) of words with lengths \\(3 \\leq l \\leq 5\\)
+          ),
+          tags$li(
+            tags$b("Type-specific word counts:"),
+            "Type-specific counts \\(A_{i.t}\\) of words with lengths \\(3 \\leq i \\leq 5\\)
                 and type \\(0 \\leq t \\leq m\\) allowing the user to sort the
                 designs based on these counts. "
+          )
+        )
+      ),
+      tags$li(
+        tags$b("Qualitative 4LF: α WLP"),
+        tags$ul(
+          tags$li(
+            tags$b("α WLP:"),
+            "The α word length pattern \\((\\mathbf{W}_{\\alpha})\\) of the design"
+          ),
+          tags$li(
+            tags$b("ω values:"),
+            "Specific \\(\\omega_i\\) values with \\(i = 4, 2, 22, 42, 44\\), allowing
+                the user to sort the designs based on these values."
+          )
+        )
+      ),
+      tags$li(
+        tags$b("Quantitative 4LF: β* WLP"),
+        tags$ul(
+          tags$li(
+            tags$b("β* WLP:"),
+            "The β* word length pattern \\((\\mathbf{W}_{\\beta^{\\star}})\\) of the design"
+          ),
+          tags$li(
+            tags$b("β* words counts:"),
+            "Counts \\((\\beta^{\\star}_{i},A_{i}^{0})\\) of words with lengths \\(3 \\leq i \\leq 6\\), allowing the user to sort the designs based on these counts."
+          ),
+          tags$li(
+            tags$b("4LF permutations:"),
+            "Permutations of the four-level factors of the design, needed to obtain the \\((\\mathbf{W}_{\\beta^{\\star}})\\) presented in the table.",
+            "The permutations are labelled using a \\(u_{i}\\) notation.",
+            "To know the actual permutation corresponding to the notation, see the 'Permutations' tab."
+          )
+        )
+      ),
+      tags$li(
+        tags$b("4LF for blocking: W₂ WLP"),
+        tags$ul(
+          tags$li(
+            tags$b("W₂ WLP:"),
+            "The W₂ word length pattern \\((\\mathbf{W}_{2})\\) of the design"
+          ),
+          tags$li(
+            tags$b("W₂ word counts:"),
+            "Counts \\(C_{i.0}\\) (aliasing between treatment factors only) and \\(C_{i.1}\\) (aliasing between treatment factors and blocking factors) of words, allowing the user to sort the designs based on these counts."
+          ),
+          tags$li(
+            tags$b("Blocking factor:"),
+            "Four-level factor needed to arrange the design in four blocks, to obtain the \\((\\mathbf{W}_{2})\\) presented in the table."
+          )
+        )
       )
     )
   )
@@ -73,8 +132,8 @@ catalog_tab <- tabPanel(
   reactableOutput("table"),
   htmlOutput("designs_selected"),
   p(
-    "To download the designs, click on the 'Download designs' button below.",
-    "In the file, the designs are ordered by ID and the ID of the design is mentionned before the design matrix"
+    "To download the designs, click on the 'Download selected designs' button below.",
+    "In the file, the designs are ordered by ID and the ID of the design is mentioned before the design matrix"
   ),
   downloadButton(
     outputId = "downloadDesigns",
@@ -132,6 +191,19 @@ effect_coding_tab <- tabPanel(
       "But, as the figure shows, it is simple to reconstruct any design only from the added factors, given its run size."
     )
   )
+)
+
+# Permutations ----
+permutations_tab <- tabPanel(
+  title = "Permutations",
+  h3("Permuting the levels of the four-level factors"),
+  p(
+    "When the four-level factors are quantitative, permuting the levels of the factors has an influence on the quality of the design.",
+    "In the output table, the permutations are given using a \\(u_{i}\\) notation.",
+    "The actual permutations corresponding to the notations are given in the table below.",
+    "The base levels of the factors are \\([0,1,2,3]\\), so that if the permutation \\([0,2,1,3]\\) is given, the second and third levels of the factor are inverted."
+  ),
+  reactableOutput("permutations")
 )
 
 # Contact ----

@@ -1,4 +1,5 @@
 library(shiny)
+# library(shinyjs)
 library(reactable)
 library(dplyr)
 library(stringr)
@@ -7,6 +8,27 @@ source("R/global.R") # Retrieve coverage data
 source("R/mixed_level_design.R") # Function to generate a mixed-level design
 
 server <- function(input, output, session) {
+  
+  output$permutations <- renderReactable({
+    read.csv('permutations.csv', header = TRUE, sep = ";") |>
+      select(label, p1) |>
+      rename(
+        Notation = "label",
+        `Permutation` = "p1",
+      )|>
+      reactable(
+        sortable = FALSE,
+        defaultColDef = colDef(
+          searchable = FALSE,
+          align = "center",
+          minWidth = 30,
+          headerStyle = list(background = "#f7f7f8"),
+          header = function(value) gsub("_", " ", value, fixed = TRUE)
+        ),
+        highlight = TRUE,
+        defaultPageSize = 12
+      )
+  })
   
   output$coverage <- renderReactable({
     coverage %>%
@@ -26,16 +48,19 @@ server <- function(input, output, session) {
   
   # Download button for the bibtex file of the reference
   output$downloadBib <- downloadHandler(
-    filename = "reference.bib",
+    filename = "bohyn_2023_enumeration.bib",
     content = function(file){
       file_conn <- file(file)
       writeLines(
         text = "@article{bohyn2023enumeration,
   title = {Enumeration of Regular Fractional Factorial Designs with Four-Level and Two-Level Factors},
   author = {Bohyn, Alexandre and Schoen, Eric D. and Goos, Peter},
+  journal = {Journal of the Royal Statistical Society Series C: Applied Statistics},
+  volume={72},
+  number={3},
+  pages={750--769},
   year = {2023},
   month = may,
-  journal = {Journal of the Royal Statistical Society Series C: Applied Statistics},
   issn = {0035-9254},
   doi = {10.1093/jrsssc/qlad031}
 }
@@ -74,7 +99,8 @@ server <- function(input, output, session) {
     validate(need(file_ok, "This design case is not covered in the catalog !"))
     
     # Read the table as a dataframe
-    load(path)
+    # load(path)
+    data <- readRDS(path)
   
     data
   })
@@ -85,6 +111,18 @@ server <- function(input, output, session) {
     updateTabsetPanel(session, "tabs", selected = "Output")
   })
 
+  # Gather characteristics input from all check boxes into one
+  v <- reactiveValues()
+  observe({
+    v$characteristics <- c(
+      input$gen_characteristics,
+      input$characteristics,
+      input$characteristics_alpha,
+      input$characteristics_beta,
+      input$characteristics_w2
+    )
+  })
+  
   # Reactable for the design is generated using the reactive data source
   output$table <- renderReactable({
     
@@ -95,28 +133,90 @@ server <- function(input, output, session) {
     # `Real` columns are selected in data set based on the selected column names
     # in the side panel
     real_colnames_list <- c()
-    if ("cols" %in% input$characteristics) {
+    if ("index" %in% v$characteristics) {
+      real_colnames_list <- append(real_colnames_list, "index")
+    }
+    if ("cols" %in% v$characteristics) {
       real_colnames_list <- append(real_colnames_list, "columns")
     }
-    if ("full" %in% input$characteristics) {
+    if ("full" %in% v$characteristics) {
       real_colnames_list <- append(real_colnames_list, "wlp")
     }
-    if ("general" %in% input$characteristics) {
+    if ("general" %in% v$characteristics) {
       new_vars <- col_names[grepl("A\\d$", col_names)]
       real_colnames_list <- append(real_colnames_list, new_vars)
     }
-    if ("type_spe" %in% input$characteristics) {
+    if ("type_spe" %in% v$characteristics) {
       new_vars <- col_names[grepl("A\\d\\.\\d", col_names)]
       real_colnames_list <- append(real_colnames_list, new_vars)
     }
+    if ("bwlp" %in% v$characteristics) {
+      real_colnames_list <- append(real_colnames_list, "beta_star_wlp")
+    }
+    if ("bcounts" %in% v$characteristics) {
+      new_vars <- col_names[grepl("B\\d", col_names)]
+      real_colnames_list <- append(real_colnames_list, new_vars)
+    }
+    if ("perm" %in% v$characteristics) {
+      real_colnames_list <- append(real_colnames_list, "permutations")
+    }
+    if ("awlp" %in% v$characteristics) {
+      real_colnames_list <- append(real_colnames_list, "alpha_wlp")
+    }
+    if ("wvalues" %in% v$characteristics) {
+      new_vars <- col_names[grepl("w\\d{1,2}$", col_names)]
+      real_colnames_list <- append(real_colnames_list, new_vars)
+    }
+    if ("w2wlp" %in% v$characteristics) {
+      real_colnames_list <- append(real_colnames_list, "w2_wlp")
+    }
+    if ("w2counts" %in% v$characteristics) {
+      new_vars <- col_names[grepl("C\\d\\.\\d", col_names)]
+      real_colnames_list <- append(real_colnames_list, new_vars)
+    }
+    if ("factor" %in% v$characteristics) {
+      real_colnames_list <- append(real_colnames_list, "factor")
+    }
+    
+    # Generate look up table for the names of the columns
+    lookup <- c(
+      ID = "index",
+      Columns = "columns",
+      GWLP = "wlp",
+      `β* WLP` = "beta_star_wlp",
+      `α WLP` = "alpha_wlp",
+      `W₂ WLP` = "w2_wlp",
+      `Blocking\nfactor` = "factor",
+      Perm. = 'permutations',
+      `A₃` = "A3",
+      `A₄` = "A4",
+      `A₅` = "A5",
+      `β*₃` = "B3",
+      `β*₄` = "B4",
+      `β*₅` = "B5",
+      `β*₆` = "B6"
+    )
     
     # Data is filtered using the `real` column names just generated and some
     # columns are renamed for aesthetics
-    data <- data %>%
-      select(all_of(real_colnames_list)) %>% # Rename the variables in title case except WLP
-      rename_all(.funs = stringr::str_to_title) %>%
-      rename_with(stringr::str_to_upper, starts_with("W")) %>%
-      tibble::rowid_to_column("ID")
+    data <- data |>
+      select(all_of(real_colnames_list)) |>
+      # Rename the variables using a look-up table
+      rename(any_of(lookup)) |>
+      # Rename the omega variables
+      rename_with(
+        .cols = matches("w\\d+"),
+        .fn = ~ str_replace_all(
+          string = .x,
+          pattern = "\\d",
+          replacement = ~ intToUtf8(as.numeric(.x) + 8320)
+          ) |> 
+          str_replace(
+            pattern = "w", 
+            replacement = "ω"
+          )
+      )
+    
     
     # We need the "beautified" column names to define their look in the react
     # table
@@ -125,10 +225,13 @@ server <- function(input, output, session) {
     # `WLP` and `Columns` columns should not be sortable and filterable
     define_colDef <- function(name) {
       col_definition <- colDef(minWidth = 70)
-      if (name == "WLP" || name == "Columns") {
+      if (name == "Columns" || str_detect(name, "WLP")) {
         col_definition$sortable <- FALSE
         col_definition$filterable <- FALSE
         col_definition$minWidth <- 200
+      } else if (name == "Perm.") {
+        col_definition$sortable <- FALSE
+        col_definition$filterable <- FALSE
       }
       col_definition
     }
@@ -151,6 +254,13 @@ server <- function(input, output, session) {
           rowSelectedStyle = list(
             backgroundColor = "#eee",
             boxShadow = "inset 2px 0 0 0 #ffa62d"
+          ),
+          inputStyle = list(
+            borderColor = "#919191",
+            backgroundColor = "#f6f8fa"
+          ),
+          style = list(
+            fontFamily = "Segoe UI"
           )
         )
       )
