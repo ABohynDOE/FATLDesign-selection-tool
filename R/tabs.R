@@ -56,7 +56,7 @@ information_tab <- tabPanel(
         )
       ),
       tags$li(
-        tags$b("α WLP"),
+        tags$b("Qualitative 4LF: α WLP"),
         tags$ul(
           tags$li(
             tags$b("α WLP:"),
@@ -70,7 +70,7 @@ information_tab <- tabPanel(
         )
       ),
       tags$li(
-        tags$b("β* WLP"),
+        tags$b("Quantitative 4LF: β* WLP"),
         tags$ul(
           tags$li(
             tags$b("β* WLP:"),
@@ -89,7 +89,7 @@ information_tab <- tabPanel(
         )
       ),
       tags$li(
-        tags$b("W₂ WLP"),
+        tags$b("4LF for blocking: W₂ WLP"),
         tags$ul(
           tags$li(
             tags$b("W₂ WLP:"),
@@ -202,11 +202,6 @@ permutations_tab <- tabPanel(
     "In the output table, the permutations are given using a \\(u_{i}\\) notation.",
     "The actual permutations corresponding to the notations are given in the table below.",
     "The base levels of the factors are \\([0,1,2,3]\\), so that if the permutation \\([0,2,1,3]\\) is given, the second and third levels of the factor are inverted."
-  ),
-  br(),
-  p(
-    "For each permutation, a mirror permutation exists, that will yield the same results.",
-    "Thus, both permutations are given in the table."
   ),
   reactableOutput("permutations")
 )

@@ -10,6 +10,7 @@ source("R/tabs.R", local = TRUE)
 ui <- fluidPage(
   # Include css style
   tags$head(
+    tags$style(HTML('* {font-family: "Segoe UI"};')),
     tags$link(rel = "stylesheet", type = "text/css", href = "style.css"),
     tags$link(rel = "icon", type = "image/gif/png", href="icon.png"),
     tags$style(
@@ -42,9 +43,9 @@ ui <- fluidPage(
     column(
       width = 8,
       tags$blockquote(
-        "Bohyn et al., Enumeration of regular fractional factorial designs with four-level and two-level factors,",
-        tags$cite("Journal of the Royal Statistical Society Series C: Applied Statistics,"),
-        "2023;",
+        "Bohyn, A., Schoen, E. D., & Goos, P. (2023). Enumeration of regular fractional factorial designs with four-level and two-level factors.",
+        tags$cite("Journal of the Royal Statistical Society Series C: Applied Statistics"),
+        ", 72(3), 750-769.",
         style = "font-size:10pt;"
       )
     ),

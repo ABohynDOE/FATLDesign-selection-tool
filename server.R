@@ -11,11 +11,10 @@ server <- function(input, output, session) {
   
   output$permutations <- renderReactable({
     read.csv('permutations.csv', header = TRUE, sep = ";") |>
-      select(label, p1, p2) |>
+      select(label, p1) |>
       rename(
         Notation = "label",
-        `First\npermutation` = "p1",
-        `Second\npermutation` = "p2"
+        `Permutation` = "p1",
       )|>
       reactable(
         sortable = FALSE,
@@ -56,9 +55,12 @@ server <- function(input, output, session) {
         text = "@article{bohyn2023enumeration,
   title = {Enumeration of Regular Fractional Factorial Designs with Four-Level and Two-Level Factors},
   author = {Bohyn, Alexandre and Schoen, Eric D. and Goos, Peter},
+  journal = {Journal of the Royal Statistical Society Series C: Applied Statistics},
+  volume={72},
+  number={3},
+  pages={750--769},
   year = {2023},
   month = may,
-  journal = {Journal of the Royal Statistical Society Series C: Applied Statistics},
   issn = {0035-9254},
   doi = {10.1093/jrsssc/qlad031}
 }
@@ -252,6 +254,13 @@ server <- function(input, output, session) {
           rowSelectedStyle = list(
             backgroundColor = "#eee",
             boxShadow = "inset 2px 0 0 0 #ffa62d"
+          ),
+          inputStyle = list(
+            borderColor = "#919191",
+            backgroundColor = "#f6f8fa"
+          ),
+          style = list(
+            fontFamily = "Segoe UI"
           )
         )
       )

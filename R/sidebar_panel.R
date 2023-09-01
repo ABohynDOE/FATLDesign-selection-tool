@@ -68,7 +68,7 @@ sidebar_panel <- sidebarPanel(
       )
     ),
     bsCollapsePanel(
-      title = "α WLP",
+      title = "α WLP (qualitative)",
       checkboxGroupInput(
         inputId = "characteristics_alpha",
         label = NULL,
@@ -79,7 +79,7 @@ sidebar_panel <- sidebarPanel(
       )
     ),
     bsCollapsePanel(
-      title = "β* WLP",
+      title = "β* WLP (quantitative)",
       checkboxGroupInput(
         inputId = "characteristics_beta",
         label = NULL,
@@ -91,7 +91,7 @@ sidebar_panel <- sidebarPanel(
       )
     ),
     bsCollapsePanel(
-      title = "W₂ WLP",
+      title = "W₂ WLP (blocking)",
       checkboxGroupInput(
         inputId = "characteristics_w2",
         label = NULL,
