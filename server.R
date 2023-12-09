@@ -200,7 +200,8 @@ server <- function(input, output, session) {
     # Data is filtered using the `real` column names just generated and some
     # columns are renamed for aesthetics
     data <- data |>
-      select(all_of(real_colnames_list)) |>
+      # select(all_of(real_colnames_list)) |>
+      select(any_of(real_colnames_list)) |>
       # Rename the variables using a look-up table
       rename(any_of(lookup)) |>
       # Rename the omega variables
@@ -381,5 +382,14 @@ server <- function(input, output, session) {
     ) %>%
       HTML()
   })
+  
+  # Warning for large 128 runs designs
+  #Create the warning text - warning if TRUE, empty string if FALSE
+  warning_text <- reactive({
+    ifelse(dim(dataInput())[1] == 100 & input$runsize == 128,
+           'Too many designs available to show. A subset of the 100 best designs according to generalized aberration is shown.',
+           '')
+  })
+  output$LargeDesignsWarning <- renderText(warning_text()) 
 }
 
