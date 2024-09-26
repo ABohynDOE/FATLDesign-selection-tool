@@ -8,10 +8,10 @@ on:
 
 jobs:
   deploy-shiny:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        r-version: ['4.0.4']
+        r-version: ['4.4.0']
 
     steps:
       - uses: actions/checkout@v4
